@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">jetpackCompose</string>
+    <string name="hello_world_form_String">Hello world from string</string>
+</resources>
