@@ -60,5 +60,8 @@ dependencies {
 
     //splash screen dependdency
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    //navigation drawer dependency
     implementation ("androidx.navigation:navigation-compose:2.7.6")
+
 }
