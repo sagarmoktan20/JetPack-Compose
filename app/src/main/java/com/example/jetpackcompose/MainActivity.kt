@@ -15,6 +15,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,10 +23,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
@@ -36,6 +39,7 @@ import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,8 +50,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
@@ -61,18 +67,24 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavGraph
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -101,10 +113,113 @@ class MainActivity : ComponentActivity() {
 //                    // and we are just passing the modifier and a lambda fun innerpadding  to set up the padding for the ui elements i.e greeting in this case and meanwhile greeting is also calling the composable function greeting
 //                    //passing the name and modifier to set up the padding for the ui elements so we are doing multiple things here ,and also we are not defining the scaffold here we are just calling it and passing the modifier and a lambda fun innerpadding  to set up the padding for the ui elements
 //
-                learnNavDrawer()
+//                learnNavDrawer()
+
+                Box(modifier = Modifier.fillMaxSize().paint(painterResource(id = R.drawable.backgroundlogin),
+                    contentScale = ContentScale.FillBounds)){
+                    val navController = rememberNavController()
+                    NavGraph(navController = navController)
+
+                }
+
+
             }
         }
     }
+
+@Composable
+fun LoginScreen(onLoginSuccess: () -> Unit) {
+    var username by remember { mutableStateOf("")}
+        var password by remember { mutableStateOf("")  };
+    val context = LocalContext.current.applicationContext;
+  Column(modifier = Modifier.fillMaxSize().padding(horizontal = 26.dp,
+      vertical = 140.dp), verticalArrangement = Arrangement.Bottom,
+      horizontalAlignment = Alignment.CenterHorizontally) {
+   OutlinedTextField(value = username,
+       onValueChange = {username = it},
+       label = {Text("Username")}, shape = RoundedCornerShape(20.dp),
+       colors = TextFieldDefaults.colors(
+           focusedLeadingIconColor = greenJc,
+           unfocusedLeadingIconColor = Color.Gray,
+           focusedTextColor = greenJc,
+           unfocusedTextColor = greenJc,
+           focusedContainerColor = Color.White,
+           unfocusedContainerColor = Color.White,
+           focusedLabelColor = greenJc,
+           unfocusedLabelColor = Color.Gray,
+           focusedIndicatorColor = greenJc,
+           unfocusedIndicatorColor = greenJc,
+           unfocusedPlaceholderColor = greenJc
+       ), leadingIcon = {
+           Icon(imageVector = Icons.Default.Person, contentDescription = "person")
+       }, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp))
+
+      OutlinedTextField(value = password,
+          onValueChange = {password = it},
+          label = {Text("Password")}, shape = RoundedCornerShape(20.dp),
+          colors = TextFieldDefaults.colors(
+              focusedLeadingIconColor = greenJc,
+              unfocusedLeadingIconColor = Color.Gray,
+              focusedTextColor = greenJc,
+              unfocusedTextColor = greenJc,
+              focusedContainerColor = Color.White,
+              unfocusedContainerColor = Color.White,
+              focusedLabelColor = greenJc,
+              unfocusedLabelColor = Color.Gray,
+              focusedIndicatorColor = greenJc,
+              unfocusedIndicatorColor = greenJc,
+              unfocusedPlaceholderColor = greenJc
+          ), leadingIcon = {
+              Icon(imageVector = Icons.Default.Lock, contentDescription = "password")
+          }, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+          visualTransformation = PasswordVisualTransformation()
+      )
+      Button(onClick = {if(AuthenticationLogic(username,password)){
+          onLoginSuccess();
+
+          Toast.makeText(context,"Login Success",Toast.LENGTH_SHORT).show()
+
+      }else{
+          Toast.makeText(context,"Login Failed",Toast.LENGTH_SHORT).show()
+      } },colors = ButtonDefaults.buttonColors(containerColor = greenJc),
+          contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp), modifier = Modifier.padding(top = 16.dp) ){
+          Text(text = "Login", color = Color.White)
+
+
+      }
+  }
+}
+
+ @Composable
+ fun NavGraph(navController: NavHostController) {
+     NavHost(navController = navController, startDestination = "login") {
+         composable("login") {
+             LoginScreen(
+                 onLoginSuccess =
+                     {
+                         navController.navigate("home") {
+                             popUpTo(0)
+
+                         }
+                     })
+         }
+         composable("home") {
+             learnNavDrawer()
+
+         }
+     }
+
+ }
+
+    private fun AuthenticationLogic( username: String, password: String): Boolean {
+  val validusername = "admin";
+        val validpassword = "123";
+        return username == validusername && password == validpassword;
+    }
+
+
+
+
 
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
